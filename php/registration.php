@@ -22,7 +22,7 @@ if (isset($_POST["submit"])) {
             // Hash the password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $query = "INSERT INTO user VALUES('', '$name', '$username', '$email', '$hashedPassword')";
+            $query = "INSERT INTO user(name, username, email, password) VALUES('$name', '$username', '$email', '$hashedPassword')";
             mysqli_query($conn, $query);
             echo "<script> alert('Registration successful'); </script>";
         } else {
