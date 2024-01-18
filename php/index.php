@@ -1,11 +1,30 @@
 <?php
 require 'config.php';
+require 'logger.php';
+
 if (!empty($_SESSION["id"])) {
-    $id = $_SESSION["id"];
-    $result = mysqli_query($conn, "SELECT * FROM user WHERE id = $id");
+    header("Location: index.php");
+}
+
+if (isset($_POST["submit"])) {
+    $usernameemail = $_POST["usernameemail"];
+    $password = $_POST["password"];
+    $result = mysqli_query($conn, "SELECT * FROM user WHERE username = '$usernameemail' OR email = '$usernameemail'");
     $row = mysqli_fetch_assoc($result);
-} else {
-    header("Location: login.php");
+
+    if (mysqli_num_rows($result) > 0) {
+        if (password_verify($password, $row["password"])) {
+            $_SESSION["login"] = true;
+            $_SESSION["id"] = $row["id"];
+            header("Location: index.php");
+        } else {
+            logError('Wrong password', 'login endpoint');
+            echo "<script> alert('Wrong password'); </script>";
+        }
+    } else {
+        logError('User not registered', 'login endpoint');
+        echo "<script> alert('User not registered'); </script>";
+    }
 }
 ?>
 
@@ -14,7 +33,7 @@ if (!empty($_SESSION["id"])) {
 <head>
     <meta charset="utf-8">
     <title>Realtime CHAT</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../static/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>

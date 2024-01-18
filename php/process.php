@@ -1,9 +1,10 @@
 <?php
 
 require 'config.php';  
+require 'logger.php';
 
 if (empty($_SESSION["id"])) {
-    // Return an error or handle unauthorized access
+    logError('Unauthorized access', 'process endpoint');
     http_response_code(401); // Unauthorized
     exit();
 }
